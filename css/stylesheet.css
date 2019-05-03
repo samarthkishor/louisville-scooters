@@ -1,0 +1,19 @@
+#container {
+  display: flex;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.overlay {
+  width: 800px;
+  height: 800px;
+}
+
+.slider {
+}
