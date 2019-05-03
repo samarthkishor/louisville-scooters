@@ -1,5 +1,53 @@
 /* jshint esversion: 6 */
 
+// Initialize the map
+const map = L.map("mapid").setView([38.25, -85.755], 11);
+const scooters = L.markerClusterGroup({ chunkedLoading: true }); // load in chunks to increase performance
+const lines = L.layerGroup().addTo(map);
+
+const mapboxUrl =
+  "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?" +
+  "access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw";
+
+L.tileLayer(mapboxUrl, {
+  maxZoom: 18,
+  attribution:
+    'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+  id: "mapbox.streets"
+}).addTo(map);
+
+// Map events
+map.on("popupclose", () => lines.clearLayers());
+
+// Initialize the slider
+const slider = d3
+  .sliderHorizontal()
+  .min(0)
+  .max(23)
+  .step(1)
+  .width(500)
+  .displayValue(false)
+  .on("onchange", val => {
+    loadScooters(val);
+  });
+
+d3
+  .select("#slider")
+  .append("svg")
+  .attr("width", 600)
+  .attr("height", 100)
+  .append("g")
+  .attr("transform", "translate(30,30)")
+  .call(slider);
+
+// Page load events
+window.onload = () => {
+  loadScooters(0);
+  loadCrashes();
+};
+
 /**
  * Converts degrees to radians
  */
@@ -143,6 +191,9 @@ function loadScooters(hour) {
   map.addLayer(scooters);
 }
 
+/**
+ * Loads markers onto the map corresponding to pedestrian crashes
+ */
 function loadCrashes() {
   d3.csv("../data/KSIPedestrians2009-2018_0.csv").then(data => {
     data.forEach(row => {
@@ -159,48 +210,3 @@ function loadCrashes() {
     });
   });
 }
-
-// Initialize the map
-const map = L.map("mapid").setView([38.25, -85.755], 11);
-const scooters = L.markerClusterGroup({ chunkedLoading: true }); // load in chunks to increase performance
-const lines = L.layerGroup().addTo(map);
-
-const mapboxUrl =
-  "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?" +
-  "access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw";
-
-L.tileLayer(mapboxUrl, {
-  maxZoom: 18,
-  attribution:
-    'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-  id: "mapbox.streets"
-}).addTo(map);
-
-// Initialize the slider
-const slider = d3
-  .sliderHorizontal()
-  .min(0)
-  .max(23)
-  .step(1)
-  .width(500)
-  .displayValue(false)
-  .on("onchange", val => {
-    loadScooters(val);
-  });
-
-d3
-  .select("#slider")
-  .append("svg")
-  .attr("width", 600)
-  .attr("height", 100)
-  .append("g")
-  .attr("transform", "translate(30,30)")
-  .call(slider);
-
-// Call functions on page load
-window.onload = () => {
-  loadScooters(0);
-  loadCrashes();
-};
