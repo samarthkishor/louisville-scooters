@@ -22,7 +22,9 @@ L.tileLayer(mapboxUrl, {
 map.on("popupclose", () => lines.clearLayers());
 
 // Initialize the slider
-const slider = d3
+let hour = 0;
+let day = "1";
+const hourSlider = d3
   .sliderHorizontal()
   .min(0)
   .max(23)
@@ -30,21 +32,44 @@ const slider = d3
   .width(500)
   .displayValue(false)
   .on("onchange", val => {
-    loadScooters(val);
+    hour = val;
+    loadScooters(hour, day);
+  });
+
+const daySlider = d3
+  .sliderHorizontal()
+  .min(1)
+  .max(7)
+  .step(1)
+  .width(500)
+  .displayValue(false)
+  .on("onchange", val => {
+    val = Math.floor(val);
+    day = val.toString();
+    loadScooters(hour, day);
   });
 
 d3
-  .select("#slider")
+  .select("#hourSlider")
   .append("svg")
   .attr("width", 600)
   .attr("height", 100)
   .append("g")
   .attr("transform", "translate(30,30)")
-  .call(slider);
+  .call(hourSlider);
+
+d3
+  .select("#daySlider")
+  .append("svg")
+  .attr("width", 600)
+  .attr("height", 100)
+  .append("g")
+  .attr("transform", "translate(30,30)")
+  .call(daySlider);
 
 // Page load events
 window.onload = () => {
-  loadScooters(0);
+  loadScooters(hour, day);
   loadCrashes();
 };
 
@@ -138,7 +163,7 @@ function drawPopup(origin, destination, time) {
         distance(origin, destination) +
         " km </p>" +
         "<p>" +
-        time +
+        Math.floor(time) +
         " minutes </p>"
     )
     .openOn(map);
@@ -147,7 +172,7 @@ function drawPopup(origin, destination, time) {
 /**
  * Loads markers onto the map whose trip was at the given hour
  */
-function loadScooters(hour) {
+function loadScooters(hour, day) {
   scooters.clearLayers();
   lines.clearLayers();
   d3.csv("../data/louisville-scooter-data.csv").then(data => {
@@ -157,19 +182,18 @@ function loadScooters(hour) {
         row =>
           distance(cityCenter, [row.StartLatitude, row.StartLongitude]) < 10 &&
           distance(cityCenter, [row.EndLatitude, row.EndLongitude]) < 10 &&
-          row.HourNum === convertHour(hour)
+          row.HourNum === convertHour(hour) &&
+          row.DayOfWeek === day
       )
       .forEach(row => {
         const greenIcon = new L.Icon({
-          iconUrl:
-            "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+          iconUrl: "../img/greenScooter.png",
           iconSize: [25, 41],
           iconAnchor: [12, 41],
           popupAnchor: [1, -34]
         });
         const redIcon = new L.Icon({
-          iconUrl:
-            "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+          iconUrl: "../img/redScooter.png",
           iconSize: [25, 41],
           iconAnchor: [12, 41],
           popupAnchor: [1, -34]
@@ -178,10 +202,12 @@ function loadScooters(hour) {
         const endCoord = [row.EndLatitude, row.EndLongitude];
         const time = row.TripDuration;
         const startMarker = new L.Marker(startCoord, {
-          icon: greenIcon
+          icon: greenIcon,
+          time: row.StartDate + " " + row.StartTime + ":00+01"
         }).on("click", e => drawLine(startCoord, endCoord, time));
         const endMarker = new L.Marker(endCoord, {
-          icon: redIcon
+          icon: redIcon,
+          time: row.StartDate + " " + row.StartTime + ":00+01"
         }).on("click", e => drawLine(startCoord, endCoord, time));
         scooters.addLayer(startMarker);
         scooters.addLayer(endMarker);

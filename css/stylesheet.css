@@ -13,7 +13,12 @@
 .overlay {
   width: 800px;
   height: 800px;
+  z-index: -1;
 }
 
 .slider {
+}
+
+.ui-widget-content {
+  z-index: 100;
 }
