@@ -10,15 +10,14 @@
   height: 100%;
 }
 
-.overlay {
-  width: 800px;
+#mapid {
   height: 800px;
-  z-index: -1;
+}
+
+.overlay {
+  height: 800px;
+  width: 800px;
 }
 
 .slider {
-}
-
-.ui-widget-content {
-  z-index: 100;
 }

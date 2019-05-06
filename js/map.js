@@ -15,13 +15,15 @@ L.tileLayer(mapboxUrl, {
     'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
     '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
     'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-  id: "mapbox.streets"
+  id: "mapbox.streets",
+  accessToken:
+    "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw"
 }).addTo(map);
 
 // Map events
 map.on("popupclose", () => lines.clearLayers());
 
-// Initialize the slider
+// Initialize the sliders
 let hour = 0;
 let day = "1";
 const hourSlider = d3
@@ -70,7 +72,19 @@ d3
 // Page load events
 window.onload = () => {
   loadScooters(hour, day);
-  loadCrashes();
+};
+
+// Checkbox for pedestrian crash data
+let crashesChecked = false;
+document.getElementById("displayCrashes").onclick = () => {
+  crashesChecked = !crashesChecked;
+  if (crashesChecked) {
+    scooters.clearLayers();
+    loadCrashes();
+  } else {
+    scooters.clearLayers();
+    loadScooters(hour, day);
+  }
 };
 
 /**
