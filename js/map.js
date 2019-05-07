@@ -63,7 +63,7 @@ d3
   .attr("width", 600)
   .attr("height", 100)
   .append("g")
-  .attr("transform", "translate(30,30)")
+  .attr("transform", "translate(15, 10)")
   .call(hourSlider);
 
 d3
@@ -72,7 +72,7 @@ d3
   .attr("width", 600)
   .attr("height", 100)
   .append("g")
-  .attr("transform", "translate(30,30)")
+  .attr("transform", "translate(15, 10)")
   .call(daySlider);
 
 // Page load events
