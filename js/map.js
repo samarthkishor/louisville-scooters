@@ -3,6 +3,7 @@
 // Initialize the map
 const map = L.map("mapid").setView([38.25, -85.755], 11);
 const scooters = L.markerClusterGroup({ chunkedLoading: true }); // load in chunks to increase performance
+const crashes = L.markerClusterGroup({ chunkedLoading: true });
 const lines = L.layerGroup().addTo(map);
 
 const mapboxUrl =
@@ -35,6 +36,7 @@ const hourSlider = d3
   .displayValue(false)
   .on("onchange", val => {
     hour = val;
+    scooters.clearLayers();
     loadScooters(hour, day);
   });
 
@@ -48,6 +50,7 @@ const daySlider = d3
   .on("onchange", val => {
     val = Math.floor(val);
     day = val.toString();
+    scooters.clearLayers();
     loadScooters(hour, day);
   });
 
@@ -81,8 +84,10 @@ document.getElementById("displayCrashes").onclick = () => {
   if (crashesChecked) {
     scooters.clearLayers();
     loadCrashes();
+    loadScooters(hour, day);
   } else {
     scooters.clearLayers();
+    crashes.clearLayers();
     loadScooters(hour, day);
   }
 };
@@ -187,7 +192,6 @@ function drawPopup(origin, destination, time) {
  * Loads markers onto the map whose trip was at the given hour
  */
 function loadScooters(hour, day) {
-  scooters.clearLayers();
   lines.clearLayers();
   d3.csv("../data/louisville-scooter-data.csv").then(data => {
     const cityCenter = [38.214525, -85.764933];
@@ -246,7 +250,9 @@ function loadCrashes() {
       });
       const coord = [row.Latitude, row.Longitude];
       const crashMarker = new L.Marker(coord, { icon: blueIcon });
-      scooters.addLayer(crashMarker);
+      crashes.addLayer(crashMarker);
     });
   });
+
+  map.addLayer(crashes);
 }
