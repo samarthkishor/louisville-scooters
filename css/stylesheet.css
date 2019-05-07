@@ -4,10 +4,22 @@
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  align-content: space-around;
+  justify-content: space-evenly;
   height: 100%;
+}
+
+.sliderContainer {
+  display: flex;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 #mapid {
@@ -20,4 +32,6 @@
 }
 
 .slider {
+  height: 75px;
+  margin: auto;
 }

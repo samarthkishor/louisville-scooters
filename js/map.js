@@ -32,7 +32,8 @@ const hourSlider = d3
   .min(0)
   .max(23)
   .step(1)
-  .width(500)
+  .ticks(24)
+  .width(400)
   .displayValue(false)
   .on("onchange", val => {
     hour = val;
@@ -45,7 +46,9 @@ const daySlider = d3
   .min(1)
   .max(7)
   .step(1)
-  .width(500)
+  .ticks(7)
+  .tickFormat(d3.format(".1s"))
+  .width(300)
   .displayValue(false)
   .on("onchange", val => {
     val = Math.floor(val);

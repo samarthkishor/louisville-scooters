@@ -22,9 +22,11 @@
 
         <div id="container">
             <div id="mapid" class="overlay"></div>
-            <div id="hourSlider" class="slider"></div>
-            <div id="daySlider" class="slider"></div>
-            <label><input type="checkbox" id="displayCrashes"/>Display pedestrian crash data</label>
+            <div class="sliderContainer">
+                <div id="daySlider" class="slider"></div>
+                <div id="hourSlider" class="slider"></div>
+                <label><input type="checkbox" id="displayCrashes"/>Display pedestrian crash data</label>
+            </div>
         </div>
 
         <script>document.write('<script src="/js/map.js?dev=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>
