@@ -139,7 +139,7 @@ function generateLineGraph(dayNum) {
           }
         },
         y: {
-          label: "Number of scooter rides on " + getDay(day)
+          label: "Scooter rides on " + getDay(day)
         }
       },
       legend: {
@@ -150,6 +150,9 @@ function generateLineGraph(dayNum) {
         value: (value, ratio, id) => value + " rides",
         name: function(name, ratio, id, index) {
           return name;
+        },
+        position: (data, width, height, element) => {
+          return { top: height, left: width };
         }
       },
       color: {
