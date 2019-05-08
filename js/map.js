@@ -217,29 +217,6 @@ function distance(coord1, coord2) {
 }
 
 /**
- * Calculates the midpoint between two coordinates
- */
-function midpoint(coord1, coord2) {
-  let lat1 = coord1[0];
-  let lat2 = coord2[0];
-  const lng1 = coord1[1];
-  const lng2 = coord2[1];
-
-  const dLat = degreesToRadians(lat2 - lat1);
-  const dLng = degreesToRadians(lng2 - lng1);
-
-  const bX = Math.cos(lat2) * Math.cos(dLng);
-  const bY = Math.cos(lat2) * Math.sin(dLng);
-  const lat3 = Math.atan2(
-    Math.sin(lat1) + Math.sin(lat2),
-    Math.sqrt((Math.cos(lat1) + bX) * (Math.cos(lat1) + bX) + bY * bY)
-  );
-  const lng3 = Number(lng1) + Math.atan2(bY, Math.cos(lat1) + bX);
-
-  return [radiansToDegrees(lat3), lng3];
-}
-
-/**
  * Converts an integer hour to a string HH format
  */
 function convertHour(hour) {
