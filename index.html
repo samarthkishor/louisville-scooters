@@ -13,6 +13,7 @@
         <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="https://unpkg.com/d3-simple-slider"></script>
+        <script src="https://unpkg.com/c3@0.7.0/c3.js"></script>
 
         <link rel="stylesheet" type="text/css" href="/css/stylesheet.css?version=2">
         <link rel="stylesheet" type="text/css" href="/css/MarkerCluster.Default.css?version=0">
@@ -23,6 +24,7 @@
         <div id="container">
             <div id="mapid" class="overlay"></div>
             <div class="sliderContainer">
+                <div id="chart"></div>
                 <div id="daySlider" class="slider"></div>
                 <div id="hourSlider" class="slider"></div>
                 <label><input type="checkbox" id="displayCrashes"/>Display pedestrian crash data</label>

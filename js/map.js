@@ -55,6 +55,7 @@ const daySlider = d3
     day = val.toString();
     scooters.clearLayers();
     loadScooters(hour, day);
+    generateLineGraph(day);
   });
 
 d3
@@ -78,6 +79,7 @@ d3
 // Page load events
 window.onload = () => {
   loadScooters(hour, day);
+  generateLineGraph(day);
 };
 
 // Checkbox for pedestrian crash data
@@ -94,6 +96,52 @@ document.getElementById("displayCrashes").onclick = () => {
     loadScooters(hour, day);
   }
 };
+
+function generateLineGraph(dayNum) {
+  getHoursData(dayNum).then(hoursData => {
+    const chart = c3.generate({
+      data: {
+        columns: [["Rides:"].concat(hoursData).flat()],
+        type: "line"
+      },
+      axis: {
+        x: {
+          label: "Hour",
+          tick: {
+            count: 24
+          }
+        },
+        y: {
+          label: "Number of scooter rides"
+        }
+      },
+      legend: {
+        hide: true
+      },
+      tooltip: {
+        title: d => d + ":00",
+        value: (value, ratio, id) => value + " rides"
+      }
+    });
+  });
+}
+
+async function getHoursData(dayNum) {
+  const data = await d3
+    .csv("../data/louisville-scooter-data.csv")
+    .then(data => {
+      return [...Array(24).keys()].map(hourNum =>
+        Math.floor(
+          data.filter(
+            row =>
+              row.HourNum === convertHour(hourNum) && row.DayOfWeek === dayNum
+          ).length / 2 // divide by 2 to get total number of rides (origin + destination)
+        )
+      );
+    });
+
+  return data;
+}
 
 /**
  * Converts degrees to radians
