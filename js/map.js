@@ -97,6 +97,33 @@ document.getElementById("displayCrashes").onclick = () => {
   }
 };
 
+/**
+ * Returns the actual day given the day number
+ */
+function getDay(dayNum) {
+  switch (Number(dayNum)) {
+    case 1:
+      return "Sunday";
+    case 2:
+      return "Monday";
+    case 3:
+      return "Tuesday";
+    case 4:
+      return "Wednesday";
+    case 5:
+      return "Thursday";
+    case 6:
+      return "Friday";
+    case 7:
+      return "Saturday";
+    default:
+      return "";
+  }
+}
+
+/**
+ * Draws a line graph that plots the number of scooter rides over the given day
+ */
 function generateLineGraph(dayNum) {
   getHoursData(dayNum).then(hoursData => {
     const chart = c3.generate({
@@ -112,7 +139,7 @@ function generateLineGraph(dayNum) {
           }
         },
         y: {
-          label: "Number of scooter rides"
+          label: "Number of scooter rides on " + getDay(day)
         }
       },
       legend: {
@@ -120,27 +147,32 @@ function generateLineGraph(dayNum) {
       },
       tooltip: {
         title: d => d + ":00",
-        value: (value, ratio, id) => value + " rides"
+        value: (value, ratio, id) => value + " rides",
+        name: function(name, ratio, id, index) {
+          return name;
+        }
+      },
+      color: {
+        pattern: ["#00ace6"]
       }
     });
   });
 }
 
+/**
+ * Returns a Promise that eventually returns an array of the number of rides each hour
+ */
 async function getHoursData(dayNum) {
-  const data = await d3
-    .csv("../data/louisville-scooter-data.csv")
-    .then(data => {
-      return [...Array(24).keys()].map(hourNum =>
-        Math.floor(
-          data.filter(
-            row =>
-              row.HourNum === convertHour(hourNum) && row.DayOfWeek === dayNum
-          ).length / 2 // divide by 2 to get total number of rides (origin + destination)
-        )
-      );
-    });
-
-  return data;
+  return await d3.csv("../data/louisville-scooter-data.csv").then(data => {
+    return [...Array(24).keys()].map(hourNum =>
+      Math.floor(
+        data.filter(
+          row =>
+            row.HourNum === convertHour(hourNum) && row.DayOfWeek === dayNum
+        ).length / 2 // divide by 2 to get total number of rides (origin + destination)
+      )
+    );
+  });
 }
 
 /**
