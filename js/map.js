@@ -21,6 +21,23 @@ L.tileLayer(mapboxUrl, {
     "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw"
 }).addTo(map);
 
+const legend = L.control({ position: "topright" });
+
+legend.onAdd = map => {
+  let div = L.DomUtil.create("div", "legend");
+  div.innerHTML +=
+    '<img src="../img/greenScooter.png">' + "     Trip origin" + "<br>";
+  div.innerHTML +=
+    '<img src="../img/redScooter.png">' + "     Trip destination" + "<br>";
+  div.innerHTML +=
+    '<img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png">' +
+    "     Pedestrian collision";
+
+  return div;
+};
+
+legend.addTo(map);
+
 // Map events
 map.on("popupclose", () => lines.clearLayers());
 
@@ -304,15 +321,15 @@ function loadScooters(hour, day) {
 function loadCrashes() {
   d3.csv("../data/KSIPedestrians2009-2018_0.csv").then(data => {
     data.forEach(row => {
-      const blueIcon = new L.Icon({
+      const icon = new L.Icon({
         iconUrl:
-          "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+          "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34]
       });
       const coord = [row.Latitude, row.Longitude];
-      const crashMarker = new L.Marker(coord, { icon: blueIcon });
+      const crashMarker = new L.Marker(coord, { icon: icon });
       crashes.addLayer(crashMarker);
     });
   });
