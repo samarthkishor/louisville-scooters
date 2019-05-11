@@ -26,9 +26,9 @@ const legend = L.control({ position: "topright" });
 legend.onAdd = map => {
   let div = L.DomUtil.create("div", "legend");
   div.innerHTML +=
-    '<img src="../img/greenScooter.png">' + "     Trip origin" + "<br>";
+    '<img src="img/greenScooter.png">' + "     Trip origin" + "<br>";
   div.innerHTML +=
-    '<img src="../img/redScooter.png">' + "     Trip destination" + "<br>";
+    '<img src="img/redScooter.png">' + "     Trip destination" + "<br>";
   div.innerHTML +=
     '<img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png">' +
     "     Pedestrian collision";
@@ -183,7 +183,7 @@ function generateLineGraph(dayNum) {
  * Returns a Promise that eventually returns an array of the number of rides each hour
  */
 async function getHoursData(dayNum) {
-  return await d3.csv("../data/louisville-scooter-data.csv").then(data => {
+  return await d3.csv("data/louisville-scooter-data.csv").then(data => {
     return [...Array(24).keys()].map(hourNum =>
       Math.floor(
         data.filter(
@@ -273,7 +273,7 @@ function drawPopup(origin, destination, time) {
  */
 function loadScooters(hour, day) {
   lines.clearLayers();
-  d3.csv("../data/louisville-scooter-data.csv").then(data => {
+  d3.csv("data/louisville-scooter-data.csv").then(data => {
     const cityCenter = [38.214525, -85.764933];
     data
       .filter(
@@ -285,13 +285,13 @@ function loadScooters(hour, day) {
       )
       .forEach(row => {
         const greenIcon = new L.Icon({
-          iconUrl: "../img/greenScooter.png",
+          iconUrl: "img/greenScooter.png",
           iconSize: [25, 41],
           iconAnchor: [12, 41],
           popupAnchor: [1, -34]
         });
         const redIcon = new L.Icon({
-          iconUrl: "../img/redScooter.png",
+          iconUrl: "img/redScooter.png",
           iconSize: [25, 41],
           iconAnchor: [12, 41],
           popupAnchor: [1, -34]
@@ -319,7 +319,7 @@ function loadScooters(hour, day) {
  * Loads markers onto the map corresponding to pedestrian crashes
  */
 function loadCrashes() {
-  d3.csv("../data/KSIPedestrians2009-2018_0.csv").then(data => {
+  d3.csv("data/KSIPedestrians2009-2018_0.csv").then(data => {
     data.forEach(row => {
       const icon = new L.Icon({
         iconUrl:
